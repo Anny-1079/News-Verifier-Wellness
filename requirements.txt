@@ -1,0 +1,6 @@
+streamlit
+textblob
+pandas
+requests
+matplotlib
+groq
