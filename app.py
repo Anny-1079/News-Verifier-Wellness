@@ -216,3 +216,7 @@ News:
 elif keyword:
     st.info("Press the 'Analyze News' button to see results.")
 
+
+if __name__ == "__main__":
+    main()
+
