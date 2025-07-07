@@ -12,9 +12,9 @@ from matplotlib import cm
 from time import sleep
 
 # --- API KEYS ---
-NEWS_API_KEY = "89b3bc7433be4e50985ba731c91b6f3b"
-POLYGON_API_KEY = "M_5ViU2jU8USItxJ0kYr1CYN0vEKgi8E"
-GROQ_API_KEY = "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"
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+POLYGON_API_KEY = os.getenv("POLYGON_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 client = Groq(api_key=GROQ_API_KEY)
 
