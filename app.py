@@ -113,7 +113,7 @@ def main():
         align: center;
     }
     .news-block {
-        background-color: black;
+        background-color: #E7F6FF;
         padding: 1rem;
         border-radius: 10px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -288,7 +288,7 @@ News:
         with col1:
             fig, ax = plt.subplots(figsize=(5, 4))
             fig.patch.set_facecolor('#111111')
-            ax.set_facecolor('#111111')
+            ax.set_facecolor('#E7F6FF')
             cmap = cm.get_cmap('RdYlGn')
             colors = [cmap((s + 1) / 2) for s in sentiments]
             ax.set_title("Sentiment Polarity", color='white', pad=20)
