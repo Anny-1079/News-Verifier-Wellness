@@ -288,15 +288,15 @@ News:
         with col1:
             fig, ax = plt.subplots(figsize=(5, 4))
             fig.patch.set_facecolor('#E7F6FF')
-            ax.set_facecolor('#111111')
+            ax.set_facecolor('white')
             cmap = cm.get_cmap('RdYlGn')
             colors = [cmap((s + 1) / 2) for s in sentiments]
-            ax.set_title("Sentiment Polarity", color='white', pad=20)
+            ax.set_title("Sentiment Polarity", color='black', pad=20)
             ax.bar(range(len(sentiments)), sentiments, color=colors)
-            ax.set_xlabel("Article Index", color='white')
-            ax.set_ylabel("Polarity (-1 to 1)", color='white')
-            ax.tick_params(axis='x', colors='white')
-            ax.tick_params(axis='y', colors='white')
+            ax.set_xlabel("Article Index", color='black')
+            ax.set_ylabel("Polarity (-1 to 1)", color='black')
+            ax.tick_params(axis='x', colors='black')
+            ax.tick_params(axis='y', colors='black')
             st.pyplot(fig)
 
         with col2:
@@ -317,7 +317,7 @@ News:
                 autopct='%1.1f%%',
                 textprops={'color': "BLACK"},
             )
-            pie_ax.set_title("Overall Sentiment Distribution", color='white')
+            pie_ax.set_title("Overall Sentiment Distribution", color='black')
             st.pyplot(pie_fig)
 
         # --- GROQ SUMMARY ---
