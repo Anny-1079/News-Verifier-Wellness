@@ -1,5 +1,5 @@
 # ai_news_verifier_app/app.py
-
+import os
 import streamlit as st
 import requests
 import pandas as pd
