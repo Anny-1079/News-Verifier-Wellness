@@ -36,6 +36,71 @@ def summarize_with_groq(full_text: str) -> str:
         # You can inspect e if you want, but keep it user-friendly in UI
         return "(Summary not available due to rate limit or API error.)"
 
+# --- CRISIS KEYWORDS & SENTIMENT LABELING ---
+
+CRISIS_KEYWORDS = [
+    # Death / Injury / Disaster
+    "kill", "killed", "kills", "dead", "death", "deaths", "injured", "injury",
+    "hospitalized", "critical", "fatal", "fatalities", "casualties", "massacre",
+    "tragedy", "catastrophe", "horror", "collapse", "died",
+
+    # Violence / Crime / Abuse
+    "attack", "attacked", "shot", "shooting", "gunfire", "gunman", "murder",
+    "murdered", "assault", "rape", "raped", "molested", "harassment",
+    "abuse", "abused", "abducted", "kidnapped", "trafficking", "crime",
+    "violent", "violence", "stabbed", "acid attack", "victim",
+
+    # War / Terrorism
+    "terror", "terrorist", "bomb", "bombing", "explosion", "missile",
+    "airstrike", "war", "conflict", "invasion", "clash", "hostage",
+    "militia", "genocide", "extremist",
+
+    # Natural Disaster
+    "earthquake", "tsunami", "volcano", "eruption", "flood", "floods",
+    "landslide", "landslides", "cyclone", "hurricane", "tornado",
+    "storm", "wildfire", "fire", "burned", "scorching", "heatwave",
+
+    # Public Health / Disease
+    "outbreak", "infection", "disease", "epidemic", "pandemic",
+    "virus", "covid", "ebola", "cholera", "outbreaks", "poisoned",
+
+    # Economic / Social Crisis
+    "collapse", "bankruptcy", "inflation", "recession", "unemployment",
+    "poverty", "homeless", "famine", "shortage", "crisis",
+
+    # Safety Threats / Accidents
+    "accident", "crash", "collision", "derailed", "plane crash",
+    "train crash", "bus crash", "injuries",
+
+    # Hate / Discrimination
+    "racism", "hate crime", "lynching", "discrimination",
+    "religious violence", "honor killing", "hate speech",
+]
+
+
+def analyze_sentiment(text: str) -> float:
+    """Return TextBlob polarity score."""
+    return round(TextBlob(text).sentiment.polarity, 7)
+
+
+def label_sentiment(score: float, text: str) -> str:
+    """Convert score + text into Positive / Neutral / Negative."""
+    lower_text = text.lower()
+
+    # Base thresholds (more sensitive)
+    if score > 0.1:
+        label = "Positive"
+    elif score < -0.1:
+        label = "Negative"
+    else:
+        label = "Neutral"
+
+    # Crisis override: if text clearly mentions bad stuff, force Negative
+    if any(word in lower_text for word in CRISIS_KEYWORDS):
+        label = "Negative"
+
+    return label
+
 
 def main():
 
@@ -114,8 +179,8 @@ def main():
             return []
 
         # --- ANALYZE SENTIMENT ---
-        def analyze_sentiment(text):
-            return round(TextBlob(text).sentiment.polarity, 7)
+        # def analyze_sentiment(text):
+        #     return round(TextBlob(text).sentiment.polarity, 7)
 
         # --- GROQ FAKE NEWS & WELLNESS ---
         def llm_fake_check(news_list):
@@ -153,11 +218,12 @@ News:
             url = item.get("url", "") or ""
             full = f"{title} {desc}"
             sentiment = analyze_sentiment(full)
-            sentiment_label = (
-                "Positive" if sentiment > 0.2
-                else "Negative" if sentiment < -0.2
-                else "Neutral"
-            )
+            sentiment_label = label_sentiment(sentiment, full)
+            # sentiment_label = (
+            #     "Positive" if sentiment > 0.2
+            #     else "Negative" if sentiment < -0.2
+            #     else "Neutral"
+            # )
 
             summary = summarize_with_groq(full)
 
@@ -173,11 +239,12 @@ News:
             url = item.get("article_url", "") or ""
             full = f"{title} {desc}"
             sentiment = analyze_sentiment(full)
-            sentiment_label = (
-                "Positive" if sentiment > 0.2
-                else "Negative" if sentiment < -0.2
-                else "Neutral"
-            )
+            sentiment_label = label_sentiment(sentiment, full)
+            # sentiment_label = (
+            #     "Positive" if sentiment > 0.2
+            #     else "Negative" if sentiment < -0.2
+            #     else "Neutral"
+            # )
 
             summary = summarize_with_groq(full)
 
@@ -189,11 +256,14 @@ News:
         # --- DISPLAY NEWS ---
         st.subheader("📰 News Analysis")
         for i in range(min(7, len(headlines))):  # only display first 7
-            sentiment_label = (
-                "Positive" if sentiments[i] > 0.2
-                else "Negative" if sentiments[i] < -0.2
-                else "Neutral"
-            )
+
+            sentiment_label = label_sentiment(sentiments[i], headlines[i])
+            
+            # sentiment_label = (
+            #     "Positive" if sentiments[i] > 0.2
+            #     else "Negative" if sentiments[i] < -0.2
+            #     else "Neutral"
+            # )
             sentiment_class = (
                 "sentiment-positive" if sentiment_label == "Positive"
                 else "sentiment-negative" if sentiment_label == "Negative"
@@ -230,9 +300,13 @@ News:
             st.pyplot(fig)
 
         with col2:
-            positive = sum(1 for s in sentiments if s > 0.2)
-            neutral = sum(1 for s in sentiments if -0.2 <= s <= 0.2)
-            negative = sum(1 for s in sentiments if s < -0.2)
+            labels = [label_sentiment(s, h) for s, h in zip(sentiments, headlines)]
+            positive = labels.count("Positive")
+            neutral = labels.count("Neutral")
+            negative = labels.count("Negative")
+            # positive = sum(1 for s in sentiments if s > 0.2)
+            # neutral = sum(1 for s in sentiments if -0.2 <= s <= 0.2)
+            # negative = sum(1 for s in sentiments if s < -0.2)
             pie_fig, pie_ax = plt.subplots(figsize=(5, 4))
             pie_fig.patch.set_facecolor('#111111')
             pie_ax.set_facecolor('#111111')
