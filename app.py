@@ -288,7 +288,7 @@ News:
         with col1:
             fig, ax = plt.subplots(figsize=(5, 4))
             fig.patch.set_facecolor('#E7F6FF')
-            ax.set_facecolor('white')
+            ax.set_facecolor('#F5FDFF')
             cmap = cm.get_cmap('RdYlGn')
             colors = [cmap((s + 1) / 2) for s in sentiments]
             ax.set_title("Sentiment Polarity", color='black', pad=20)
