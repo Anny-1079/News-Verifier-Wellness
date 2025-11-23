@@ -118,7 +118,7 @@ def main():
         border-radius: 10px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         margin-bottom: 1rem;
-        color: white;
+        color: black;
     }
     .sentiment-positive {
         color: green;
@@ -287,8 +287,8 @@ News:
 
         with col1:
             fig, ax = plt.subplots(figsize=(5, 4))
-            fig.patch.set_facecolor('#111111')
-            ax.set_facecolor('#E7F6FF')
+            fig.patch.set_facecolor('#E7F6FF')
+            ax.set_facecolor('#111111')
             cmap = cm.get_cmap('RdYlGn')
             colors = [cmap((s + 1) / 2) for s in sentiments]
             ax.set_title("Sentiment Polarity", color='white', pad=20)
@@ -308,14 +308,14 @@ News:
             # neutral = sum(1 for s in sentiments if -0.2 <= s <= 0.2)
             # negative = sum(1 for s in sentiments if s < -0.2)
             pie_fig, pie_ax = plt.subplots(figsize=(5, 4))
-            pie_fig.patch.set_facecolor('#111111')
+            pie_fig.patch.set_facecolor('#E7F6FF')
             pie_ax.set_facecolor('#111111')
             pie_ax.pie(
                 [positive, neutral, negative],
                 labels=["Positive", "Neutral", "Negative"],
                 colors=["#28a745", "#6c757d", "#dc3545"],
                 autopct='%1.1f%%',
-                textprops={'color': "white"},
+                textprops={'color': "BLACK"},
             )
             pie_ax.set_title("Overall Sentiment Distribution", color='white')
             st.pyplot(pie_fig)
@@ -543,7 +543,7 @@ if __name__ == "__main__":
 #             pie_ax.set_facecolor('#111111')
 #             pie_ax.pie([positive, neutral, negative], labels=["Positive", "Neutral", "Negative"],
 #                     colors=["#28a745", "#6c757d", "#dc3545"], autopct='%1.1f%%', textprops={'color':"white"})
-#             pie_ax.set_title("Overall Sentiment Distribution", color='white')
+#             pie_ax.set_title("Overall Sentiment Distribution", color='black')
 #             st.pyplot(pie_fig)
 
 
